@@ -10,14 +10,14 @@ import argparse
 
 # the list of tags to search for
 TAGS = [
-    '(DDLValley\.(eu|net|org|com)_)(.*)'
+    r'(DDLValley\.(eu|net|org|com)_)(.*)'
 ]
 
 # default directory to search in
 DIR = '~/Downloads/'
 
 
-def searchAndRename(path, args):
+def search_and_rename(path, args):
     """Search for matching filenames and remove the matched pattern."""
     for fCandidate in os.listdir(path):
         if not os.path.isfile(path+fCandidate):
@@ -33,7 +33,8 @@ def searchAndRename(path, args):
                 if not args.dry_run:
                     os.rename(oldFilePath, newFilePath)
                 if args.verbose:
-                    print "Rename '{0}' -> '{1}'".format(fCandidate, match.group(3))
+                    print "Rename '{0}' -> '{1}'".format(
+                        fCandidate, match.group(3))
 
 
 def main():
@@ -59,7 +60,7 @@ def main():
         path = os.path.expanduser(path)
         if args.verbose:
             print "Searching in path '{0}'".format(path)
-        searchAndRename(path, args)
+        search_and_rename(path, args)
 
 
 if __name__ == "__main__":
