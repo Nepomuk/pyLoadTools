@@ -8,9 +8,10 @@ import os
 import re
 import argparse
 
-# the list of tags to search for
+# The list of tags to search for. The characters within the group named 'keep'
+# will be kept.
 TAGS = [
-    r'(DDLValley\.(eu|net|org|com)_)(.*)'
+    r'(DDLValley\.(eu|net|org|com)_)(?P<keep>.*)'
 ]
 
 # default directory to search in
@@ -29,12 +30,12 @@ def search_and_rename(path, args):
             match = re.search(tag, fCandidate)
             if match:
                 oldFilePath = path+fCandidate
-                newFilePath = path+match.group(3)
+                newFilePath = path+match.group('keep')
                 if not args.dry_run:
                     os.rename(oldFilePath, newFilePath)
                 if args.verbose:
                     print "Rename '{0}' -> '{1}'".format(
-                        fCandidate, match.group(3))
+                        fCandidate, match.group('keep'))
 
 
 def main():
