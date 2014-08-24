@@ -4,25 +4,36 @@ Removes site tags (like DDLValley.net) from the beginning of your files. This
 script is intended to use with pyLoad.
 """
 
-import sys
 import os
+import re
 import argparse
 
 # the list of tags to search for
 TAGS = [
-    '/DDLValley\.(eu|net|org|com)_/'
+    '(DDLValley\.(eu|net|org|com)_)(.*)'
 ]
 
 # default directory to search in
 DIR = '~/Downloads/'
 
 
-def searchAndRename(args):
+def searchAndRename(path, args):
     """Search for matching filenames and remove the matched pattern."""
-    for path in args.paths:
-        paths.append(os.path.expanduser(path))
-    print paths
-    #print os.listdir(os.path.expanduser(DIR))
+    for fCandidate in os.listdir(path):
+        if not os.path.isfile(path+fCandidate):
+            if args.verbose:
+                print "Skip '{0}', is not a file.".format(fCandidate)
+            continue
+
+        for tag in TAGS:
+            match = re.search(tag, fCandidate)
+            if match:
+                oldFilePath = path+fCandidate
+                newFilePath = path+match.group(3)
+                if not args.dry_run:
+                    os.rename(oldFilePath, newFilePath)
+                if args.verbose:
+                    print "Rename '{0}' -> '{1}'".format(fCandidate, match.group(3))
 
 
 def main():
@@ -44,7 +55,11 @@ def main():
         help="Verbose output.")
     args = parser.parse_args()
 
-    searchAndRename(args)
+    for path in args.paths:
+        path = os.path.expanduser(path)
+        if args.verbose:
+            print "Searching in path '{0}'".format(path)
+        searchAndRename(path, args)
 
 
 if __name__ == "__main__":
