@@ -56,7 +56,8 @@ def get_paths_to_search_in(args):
 def search_and_rename(path, args):
     """Search for matching filenames and remove the matched pattern."""
     for fCandidate in os.listdir(path):
-        if not os.path.isfile(path+fCandidate):
+        oldFilePath = os.path.join(path, fCandidate)
+        if not os.path.isfile(oldFilePath):
             if args.verbose:
                 print "Skip '{0}', is not a file.".format(fCandidate)
             continue
@@ -64,8 +65,7 @@ def search_and_rename(path, args):
         for tag in TAGS:
             match = re.search(tag, fCandidate)
             if match:
-                oldFilePath = path+fCandidate
-                newFilePath = path+match.group('keep')
+                newFilePath = os.path.join(path, match.group('keep'))
                 if not args.dry_run:
                     os.rename(oldFilePath, newFilePath)
                 if args.verbose:
