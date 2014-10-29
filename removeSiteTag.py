@@ -19,6 +19,19 @@ TAGS = [
 LOGFILE = 'removeSiteTag.log'
 
 
+def check_path_candidate(pathCandidate):
+    """Check the path candidate and put it into a proper format."""
+    pathCandidate = os.path.expanduser(pathCandidate)
+    if os.path.exists(pathCandidate) and os.path.isdir(pathCandidate):
+        # for some reason it doesn't work if there is a trailing slash
+        if pathCandidate.endswith('/'):
+            return pathCandidate[:-1]
+        else:
+            return pathCandidate
+
+    return None
+
+
 def get_paths_to_search_in(args):
     """Gather the paths passed by arguments, check if they exist and expand
     user directories."""
@@ -26,15 +39,15 @@ def get_paths_to_search_in(args):
 
     # first the argument from pyLoad
     if len(args.pyload) > 2:
-        pathCandidate = os.path.expanduser(args.pyload[1])
-        if os.path.exists(pathCandidate) and os.path.isdir(pathCandidate):
+        pathCandidate = check_path_candidate(args.pyload[1])
+        if pathCandidate:
             paths.append(pathCandidate)
 
     # now the user defined ones
     if args.paths:
         for path in args.paths:
-            pathCandidate = os.path.expanduser(path)
-            if os.path.exists(pathCandidate) and os.path.isdir(pathCandidate):
+            pathCandidate = check_path_candidate(path)
+            if pathCandidate:
                 paths.append(pathCandidate)
 
     return paths
