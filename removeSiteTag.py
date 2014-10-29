@@ -15,11 +15,29 @@ TAGS = [
     r'(DDLValley\.(eu|net|org|com)_)(?P<keep>.*)'
 ]
 
-# default directory to search in
-DIR = '~/Downloads/'
-
 # default log file
 LOGFILE = 'removeSiteTag.log'
+
+
+def get_paths_to_search_in(args):
+    """Gather the paths passed by arguments, check if they exist and expand
+    user directories."""
+    paths = []
+
+    # first the argument from pyLoad
+    if len(args.pyload) > 2:
+        pathCandidate = os.path.expanduser(args.pyload[1])
+        if os.path.exists(pathCandidate) and os.path.isdir(pathCandidate):
+            paths.append(pathCandidate)
+
+    # now the user defined ones
+    if args.paths:
+        for path in args.paths:
+            pathCandidate = os.path.expanduser(path)
+            if os.path.exists(pathCandidate) and os.path.isdir(pathCandidate):
+                paths.append(pathCandidate)
+
+    return paths
 
 
 def search_and_rename(path, args):
@@ -50,10 +68,13 @@ def main():
     parser = argparse.ArgumentParser(
         description='Search for files containing a certain tag and remove it.')
     parser.add_argument(
-        "paths", metavar='path',
+        "pyload", metavar='pyload-arg',
         type=str, nargs='*',
-        default=[DIR],
-        help="The directories to search in. Default: {0}".format(DIR))
+        help="The arguments coming from pyLoad.")
+    parser.add_argument(
+        "--paths", metavar='path',
+        type=str, nargs='*',
+        help="The directories to search in. Default: Just the second argument passed over from pyload.")
     parser.add_argument(
         '-n', '--dry-run',
         action='store_true',
@@ -81,8 +102,9 @@ def main():
         for arg, val in vars(args).iteritems():
             logging.debug("Argument {0}={1}".format(arg, val))
 
-    for path in args.paths:
-        path = os.path.expanduser(path)
+    paths = get_paths_to_search_in(args)
+
+    for path in paths:
         if args.verbose:
             print "Searching in path '{0}'".format(path)
         if args.logging:
