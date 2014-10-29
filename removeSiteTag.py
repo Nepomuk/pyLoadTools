@@ -12,7 +12,7 @@ import logging
 # The list of tags to search for. The characters within the group named 'keep'
 # will be kept.
 TAGS = [
-    r'(DDLValley\.(eu|net|org|com)_)(?P<keep>.*)'
+    r'(DDLValley\.(eu|net|org|com|rocks)_)(?P<keep>.*)'
 ]
 
 # default log file
