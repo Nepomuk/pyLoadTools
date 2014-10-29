@@ -7,6 +7,7 @@ script is intended to use with pyLoad.
 import os
 import re
 import argparse
+import logging
 
 # The list of tags to search for. The characters within the group named 'keep'
 # will be kept.
@@ -16,6 +17,9 @@ TAGS = [
 
 # default directory to search in
 DIR = '~/Downloads/'
+
+# default log file
+LOGFILE = 'removeSiteTag.log'
 
 
 def search_and_rename(path, args):
@@ -36,6 +40,9 @@ def search_and_rename(path, args):
                 if args.verbose:
                     print "Rename '{0}' -> '{1}'".format(
                         fCandidate, match.group('keep'))
+                if args.logging:
+                    logging.debug("Rename '{0}' -> '{1}'".format(
+                        fCandidate, match.group('keep')))
 
 
 def main():
@@ -55,12 +62,31 @@ def main():
         '-v', '--verbose',
         action='store_true',
         help="Verbose output.")
+    parser.add_argument(
+        '-l', '--logging',
+        action='store_true',
+        help="Activate log output.")
+    parser.add_argument(
+        '-L', '--log-file',
+        type=str, default=LOGFILE,
+        help="Choose log file name, default: {0}".format(LOGFILE))
     args = parser.parse_args()
+
+    if args.logging:
+        logging.basicConfig(
+            filename='removeSiteTag.log',
+            level=logging.DEBUG,
+            format='%(asctime)s  %(message)s')
+        logging.debug("==== Running script =====")
+        for arg, val in vars(args).iteritems():
+            logging.debug("Argument {0}={1}".format(arg, val))
 
     for path in args.paths:
         path = os.path.expanduser(path)
         if args.verbose:
             print "Searching in path '{0}'".format(path)
+        if args.logging:
+            logging.debug("Searching in path '{0}'".format(path))
         search_and_rename(path, args)
 
 
