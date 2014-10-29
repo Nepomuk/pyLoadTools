@@ -62,6 +62,12 @@ def search_and_rename(path, args):
                 print "Skip '{0}', is not a file.".format(fCandidate)
             continue
 
+        # download in progress
+        if re.search(r'chunk(s|\d+)$', fCandidate):
+            if args.verbose:
+                print "Skip '{0}', download in progress.".format(fCandidate)
+            continue
+
         for tag in TAGS:
             match = re.search(tag, fCandidate)
             if match:
