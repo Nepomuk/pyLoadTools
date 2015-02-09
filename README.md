@@ -18,7 +18,9 @@ In there you'll find the following folders:
         package_finished
         unrar_finished
 
-Their functions should be self-explanatory - scripts put in there will be executed at the corresponding event. I use symlinks in there which point to the scripts from this repository.
+Their functions should be self-explanatory - scripts put in there will be executed at the corresponding event. I use symlinks in there which point to the scripts from this repository, e.g.
+
+        ln -s removeSiteTag.py ~/.pyload/scripts/<event folder>
 
 
 ## Remove Site Tag
