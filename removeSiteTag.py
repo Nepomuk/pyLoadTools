@@ -11,8 +11,10 @@ import logging
 
 # The list of tags to search for. The characters within the group named 'keep'
 # will be kept.
+SEPERATORS = '(\.|_)'
+DOMAINS = '(eu|net|org|com|rocks)'
 TAGS = [
-    r'(DDLValley\.(eu|net|org|com|rocks)_)(?P<keep>.*)'
+    r'(DDLValley'+SEPERATORS+DOMAINS+SEPERATORS+')(?P<keep>.*)'
 ]
 
 # default log file
